@@ -1,0 +1,15 @@
+root.updated_at = this.properties.meta.updated_at
+root.json_dump.geometry = this.geometry
+root.json_dump.units = this.properties.meta.units
+
+# Calculate the average temperature for temperatures above $high_temp
+let high_temp = 0.0
+let high_temps = this.properties.timeseries.
+            filter(ts -> ts.data.instant.details.air_temperature > $high_temp).
+            map_each(ts -> ts.data.instant.details.air_temperature)
+root.json_dump.avg_above_high_temps = $high_temps.
+            fold(0, temp -> temp.tally + temp.value) / $high_temps.length()
+
+# entire json in `json_dump`: root.json_dump = this
+# I would like to be able to make my own functions, is that possible?
+# Can be used locally: cat data.jsonl | benthos blobl 'foo.(bar | baz).buz'

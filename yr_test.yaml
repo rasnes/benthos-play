@@ -1,0 +1,59 @@
+tests:
+  - name: test yr mapping
+    target_mapping: './yr.blobl'
+    environment: {}
+    input_batch:
+      - content: |
+          {
+            "geometry" : {
+              "coordinates" : [
+                0,
+                51.5,
+                4
+              ],
+              "type" : "Point"
+            },
+            "properties" : {
+              "meta" : {
+                "units" : {
+                  "air_pressure_at_sea_level" : "hPa",
+                  "air_temperature" : "celsius",
+                  "cloud_area_fraction" : "%",
+                  "precipitation_amount" : "mm",
+                  "relative_humidity" : "%",
+                  "wind_from_direction" : "degrees",
+                  "wind_speed" : "m/s"
+                },
+                "updated_at" : "2023-02-22T17:39:17Z"
+              },
+              "timeseries": [
+                {"foo": "bar"},
+                {"foo": "baz"}
+              ]
+            }
+          }
+    output_batches:
+      -
+        - json_equals: |
+            {
+              "json_dump": {
+                "geometry": {
+                  "coordinates": [
+                    0,
+                    51.5,
+                    4
+                  ],
+                  "type": "Point"
+                },
+                "units": {
+                  "air_pressure_at_sea_level": "hPa",
+                  "air_temperature": "fahrenheit",
+                  "cloud_area_fraction": "%",
+                  "precipitation_amount": "mm",
+                  "relative_humidity": "%",
+                  "wind_from_direction": "degrees",
+                  "wind_speed": "m/s"
+                }
+              },
+              "updated_at": "2023-02-22T19:32:54Z"
+            }
